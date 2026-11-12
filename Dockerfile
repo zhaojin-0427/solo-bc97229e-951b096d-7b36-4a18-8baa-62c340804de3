@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY scripts ./scripts
 
-RUN mkdir -p /data/objects
+RUN mkdir -p /data/objects /data/quarantine
 
 # Run as a non-root user; the mounted volume is chowned at startup entrypoint.
 RUN useradd --create-home --uid 10001 appuser

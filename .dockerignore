@@ -4,6 +4,8 @@ __pycache__/
 .git/
 data/
 .pylibs/
+.venv/
+venv/
 tests/
 *.db
 *.db-wal

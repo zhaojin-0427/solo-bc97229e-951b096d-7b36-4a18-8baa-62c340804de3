@@ -1,7 +1,6 @@
 """Shared pytest fixtures: isolated data dir, test client, synthetic files."""
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -18,12 +17,13 @@ def data_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     # Keep the env var and every module-level path binding in sync. All
     # modules read these attributes at call time.
     monkeypatch.setenv("DICOM_INGEST_DATA_DIR", str(target))
-    from app import config, db
-    storage = target / "objects"
+    from app import config
     monkeypatch.setattr(config, "DATA_DIR", target)
     monkeypatch.setattr(config, "DB_PATH", target / "ingest.db")
-    monkeypatch.setattr(config, "STORAGE_DIR", storage)
-    monkeypatch.setattr(db, "DB_PATH", target / "ingest.db")
+    monkeypatch.setattr(config, "STORAGE_DIR", target / "objects")
+    monkeypatch.setattr(config, "QUARANTINE_DIR", target / "quarantine")
+    # All other modules resolve paths through the config module at call time,
+    # so patching config is sufficient across threads and restarts.
     yield target
 
 

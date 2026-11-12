@@ -12,6 +12,9 @@ from pathlib import Path
 DATA_DIR = Path(os.getenv("DICOM_INGEST_DATA_DIR", "/data")).resolve()
 DB_PATH = DATA_DIR / "ingest.db"
 STORAGE_DIR = DATA_DIR / "objects"
+# Objects moved out of the live storage tree while quarantined. They stay on
+# the same volume so isolation / restore are atomic directory-entry renames.
+QUARANTINE_DIR = DATA_DIR / "quarantine"
 
 # A batch carries at most this many files (hard product requirement: <= 20).
 MAX_FILES_PER_BATCH = int(os.getenv("DICOM_INGEST_MAX_FILES", "20"))
@@ -35,3 +38,4 @@ BUSY_TIMEOUT_MS = int(os.getenv("DICOM_INGEST_BUSY_TIMEOUT_MS", "30000"))
 def ensure_dirs() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     STORAGE_DIR.mkdir(parents=True, exist_ok=True)
+    QUARANTINE_DIR.mkdir(parents=True, exist_ok=True)
